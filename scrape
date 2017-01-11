@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+Dir["lib/*.rb"].each {|file| require_relative file }
+
+require "tty-spinner"
+
+  %w{england scotland wales ireland}.each do |country|
+  spinner = TTY::Spinner.new("[:spinner] Pulling #{country} from zoopla")
+  Pull_Down::Zoopla.new(country).pull_and_store do
+    spinner.spin
+  end
+  spinner.success("(Successfull)")
+end
+spinner = TTY::Spinner.new("[:spinner] Pulling uk from On the Market")
+Pull_Down::On_The_Market.new("uk").pull_and_store do
+  spinner.spin
+end
+spinner.success("(Successfull)")
