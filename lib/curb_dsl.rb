@@ -51,6 +51,7 @@ module Curb_DSL
       setup_request request_method, http
     end
     @curl.ssl_verify_peer = @ssl ||false
+    @curl.ignore_content_length = true
     @curl.http request_method
     if @curl.response_code == 301
       @uri =  @curl.redirect_url
