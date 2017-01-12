@@ -122,7 +122,8 @@ class Pull_Down
     ]
   end
 
-  def set_branch(listing)
+  def set_branch(listing={})
+    listing ||= {}
     [
        listing["name"],
        listing["location"][:road],
