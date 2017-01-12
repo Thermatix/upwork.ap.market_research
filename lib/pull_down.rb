@@ -108,7 +108,8 @@ class Pull_Down
   end
   private
 
-  def set_agent(listing)
+  def set_agent(listing={})
+    listing ||= {}
     type = listing.fetch("type",{})
     [
        listing["name"].split('-').first,
