@@ -7,12 +7,12 @@ require "tty-spinner"
 if ARGV.first == "-t"
   if ARGV[1] == "zoop"
     puts "testing zoop scraper"
- %w{england scotland wales ireland}.each do |country|
-    Pull_Down::Zoopla.new(country).pull_and_check
- end
+    %w{england scotland wales ireland}.each do |country|
+        Pull_Down::Zoopla.new(country).pull_and_check
+    end
   else
     puts "testing otm scraper"
-    Pull_Down::On_The_Market.new("uk").pull_and_store
+    Pull_Down::On_The_Market.new("uk").pull_and_check
   end
 else
   %w{england scotland wales ireland}.each do |country|

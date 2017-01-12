@@ -74,18 +74,18 @@ class Pull_Down
             agent_csv << @agent
           end
           branch_csv << set_branch(listing)
-          yield
+          yield if block_given?
         end
       end
     end
   end
 
   def pull_and_check
+    puts make_uri(@location,0)
     doc = pull_initial
     # puts doc.methods.sort.each_slice(5) {|c| puts c.to_s}
     seperator = "}#{'-' * 40}{"
     puts seperator
-    puts make_uri(@location,0)
     puts mpc(doc)
     puts seperator
     test_item = doc.xpath(get_listing_tag[:path]).first
@@ -94,23 +94,16 @@ class Pull_Down
     puts sub_page(test_item)
     puts seperator
     @agent = []
-    @branch = [] 
+    sep = '%s%s%s' % [index,seperator,index]
     pull_infomation_down(doc) do |listing,index|
       unless @agent.first == listing["name"].split('-').first
         @agent = set_agent(listing)
-        change_agent = true
-      end
-      @branch = set_branch(listing)
-      sep = '%s%s%s' % [index,seperator,index]
-      if change_agent
         puts @agent.join(',')
         puts sep
-        change_agent = false
       end
-      puts @branch.join(',')
+      puts set_branch(listing).join(',')
+      puts sep
       sleep 0.5
-      # puts "say '#{listing['name']}'"
-      # break
     end
   end
   private
@@ -147,7 +140,7 @@ class Pull_Down
   def pull_initial
     set_uri(make_uri(@location,0))
     get
-    Nokogiri::HTML(body)
+    to_doc(body)
   end
 
   def to_doc(html)
@@ -156,12 +149,13 @@ class Pull_Down
 
   def pull_infomation_down(doc=nil)
     doc ||= pull_initial
-    (mpc(doc) * @inc).times.each do |index|
-      get_listing(doc) do |listing|
+    (mpc(doc) * @inc).times.inject(doc) do |node_doc,index|
+      get_listing(node_doc) do |listing|
         yield [listing,index]
       end
       set_uri(make_uri(@location,index))
       get
+      to_doc(body)
     end
   end
 
