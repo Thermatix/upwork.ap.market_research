@@ -4,7 +4,7 @@ require 'csv'
 class Pull_Down
 
   Meta_Tags = %w{listing mpc sub_page}
-  Fields = %w{type name website location manager otm rm zoop}
+  Fields = %w{type name website location manager otm zoop}
   include Curb_DSL
 
   def initialize(loc,&block)
@@ -68,7 +68,13 @@ class Pull_Down
       agent_csv << ["name", "sales", "lettings", "sales and lettings", "website", "On the Market", "Zoopla"]
       CSV.open("%s_%s_branch_data.csv" % [class_name,@location],"wb") do |branch_csv|
         branch_csv << ["Agency", "Road", "City", "Post Code"]
-        pull_infomation_down(doc) do |listing,index|
+        pull_infomation_down(doc) do |list,index|
+          listing =
+          if after_block
+            after_block.call(list)
+          else
+            list
+          end
           unless @agent.first == listing["name"].split('-').first
             @agent = set_agent(listing)
             agent_csv << @agent
@@ -78,6 +84,14 @@ class Pull_Down
         end
       end
     end
+  end
+
+  def self.after_pull &block
+    @after_block = block
+  end
+
+  def after_block
+    @after_block ||= self.class.instance_variable_get(:@after_block)
   end
 
   def pull_and_check

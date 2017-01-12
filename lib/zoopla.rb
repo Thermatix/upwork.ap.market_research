@@ -15,6 +15,17 @@ class Pull_Down
 
       set_uri_template "http://www.zoopla.co.uk","/find-agents/%s/?radius=0&pn=%s"
 
+      set_otm_tag "//li[contains(@class,'result') and contains(@class,'panel') and contains(@class,'agent-result')]",         {
+        before: :pull_otm, after: :set_otm,
+        attr: :to_html,
+        x_path_fail: false
+      }
+
+      after_pull do |field_data|
+        field_data[:zoopla] = true
+        field_data
+      end
+
       # set_arla_tag "//div[contains(@class, 'resultsarea')]//a[contains(@class,'resulttitle')]", {
         # before: :search_arla,
       #   after: :confirm_arla
@@ -45,16 +56,12 @@ class Pull_Down
 
       end
 
-      def confirm_arla(string,field_data)
-        puts "YAY AFTER"
-        puts string        
-      end
 
       def transform_address(string,field_data)
         address = string.delete("\n").split(',')
         {
           road: address[0].strip,
-          city: address[2].strip,
+          city: address[2] ? address[2].strip : "",
           post_code: address.last.split('-').first.strip
         }
       end

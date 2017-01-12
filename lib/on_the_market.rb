@@ -19,6 +19,16 @@ class Pull_Down
 
 
     set_uri_template "www.onthemarket.com","/agents/%s/?agent-search-type=branches&page=%s"
+    set_zoop_tag "//div[contains(@id,'content')]//div[contains(@class,'agents-results-branch') and contains(@class,'clearfix')]", {
+          before: :pull_zoop, after: :set_zoop,
+          attr: :to_html,
+          x_path_fail: false
+        }
+
+    after_pull do |field_data|
+      field_data[:otm] = true
+      field_data
+    end
 
     def transform_address(string,_)
       @parts ||= [:road,:city,:post_code]
