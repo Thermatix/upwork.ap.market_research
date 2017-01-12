@@ -110,7 +110,7 @@ class Pull_Down
 
   def set_agent(listing={})
     listing ||= {}
-    type = listing.fetch("type",{})
+    type = listing.fetch("type",{}) || {}
     [
        listing["name"].split('-').first,
        type.fetch(:sales,false),
