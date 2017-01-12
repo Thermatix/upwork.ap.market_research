@@ -22,7 +22,7 @@ class Pull_Down
       }
 
       after_pull do |field_data|
-        field_data[:zoopla] = true
+        field_data["zoop"] = true
         field_data
       end
 

@@ -26,7 +26,7 @@ class Pull_Down
         }
 
     after_pull do |field_data|
-      field_data[:otm] = true
+      field_data["otm"] = true
       field_data
     end
 
