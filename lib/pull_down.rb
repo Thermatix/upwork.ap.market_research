@@ -109,11 +109,12 @@ class Pull_Down
   private
 
   def set_agent(listing)
+    type = listing.fetch("type",{})
     [
        listing["name"].split('-').first,
-       listing["type"][:sales] || false,
-       listing["type"][:lettings] || false,
-       listing["type"][:sales] && listing["type"][:lettings] || false,
+       type.fetch(:sales,false),
+       type.fetch(:lettings,false),
+       type.fetch(:sales,false) && type.fetch(:lettings,false),
        listing["website"] || "",
        listing["otm"],
        listing["zoop"]
